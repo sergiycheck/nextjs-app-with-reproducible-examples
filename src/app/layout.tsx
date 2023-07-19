@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import Link from "next/link";
+import { Providers } from "./components/providers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -14,17 +15,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={`${inter.className}`}>
-        <nav>
-          <ul className="flex flex-row justify-around">
-            <Link href="/">Home</Link>
-            <Link href="/page1">page1</Link>
-            <Link href="/page2">page2</Link>
-          </ul>
-        </nav>
+        <Providers>
+          <nav>
+            <ul className="flex flex-row justify-around">
+              <Link href="/">Home</Link>
+              <Link href="/page1">page1</Link>
+              <Link href="/page2">page2</Link>
+            </ul>
+          </nav>
 
-        <main className="flex flex-col items-center justify-center min-h-screen py-2 ">
-          {children}
-        </main>
+          <main className="flex flex-col container mx-auto px-4 min-h-screen ">{children}</main>
+        </Providers>
       </body>
     </html>
   );
