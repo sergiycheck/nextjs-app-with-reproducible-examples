@@ -1,4 +1,4 @@
-import { NftsInfititeScroll } from "../components/nft-infinite-scroll";
+import { NftsInfititeScroll } from "../components/nfts-related/react-infinite-scroll-example/nft-infinite-scroll";
 
 export default function Page1() {
   return (

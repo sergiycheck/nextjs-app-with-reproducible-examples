@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { axiosInstance } from "./axios";
+import { axiosInstance } from "../axios";
 import { Attribute, Nft } from "./types";
 
 export interface NftMetadata {

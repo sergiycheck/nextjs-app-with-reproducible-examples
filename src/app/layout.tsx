@@ -24,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             </ul>
           </nav>
 
-          <main className="flex flex-col container mx-auto px-4 min-h-screen ">{children}</main>
+          <main className="flex flex-col container mx-auto px-4 ">{children}</main>
         </Providers>
       </body>
     </html>
