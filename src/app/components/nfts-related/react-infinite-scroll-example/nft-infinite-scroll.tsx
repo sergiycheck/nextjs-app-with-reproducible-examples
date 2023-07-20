@@ -1,12 +1,9 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
-import { NO_NFT_IMAGE_PATH, useNftNormalizedMetadata } from "../utils";
-import InfiniteScroll from "react-infinite-scroll-component";
 import { defaultAddress, limit, useNftsInfititeQuery } from "../use-nft-hook";
-import { Nft } from "../types";
-import { MessageWrapper } from "../shared";
+import { MessageWrapper, NftCard } from "../shared";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export function NftsInfititeScroll() {
   const { data, error, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, status } =
@@ -63,19 +60,3 @@ export function NftsInfititeScroll() {
     </div>
   );
 }
-
-export const NftCard = ({ nft }: { nft: Nft }) => {
-  const { data: metadata, isLoading } = useNftNormalizedMetadata(nft);
-
-  return (
-    <div className="flex flex-col gap-2">
-      <Image
-        src={metadata ? metadata?.imageUrl : NO_NFT_IMAGE_PATH}
-        width={180}
-        height={37}
-        alt={metadata?.name ?? "NFT"}
-      />
-      <h2>{metadata?.name}</h2>
-    </div>
-  );
-};

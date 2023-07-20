@@ -2,13 +2,16 @@
 
 import React from "react";
 import { IndexRange, InfiniteLoader, List, AutoSizer, ListRowProps } from "react-virtualized";
-import { useInfiniteQueryProjects } from "../hooks/use-projects";
+import { defaultAddress, useNftsInfititeQuery } from "../use-nft-hook";
+import { Nft } from "../types";
+import { MessageWrapper, NftCard } from "../shared";
+import { v4 as uuidv4 } from "uuid";
 
 export const ReactVirtualizedInfiniteLoading = () => {
   const { status, data, error, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteQueryProjects();
+    useNftsInfititeQuery({ address: defaultAddress });
 
-  const allRows = data ? data.pages.flatMap((d) => d.rows) : [];
+  const allRows = data ? data.pages.flatMap((d) => d.result) : [];
 
   return (
     <ReactVirtualizedInfiniteLoader
@@ -30,7 +33,7 @@ function ReactVirtualizedInfiniteLoader({
 }: {
   hasNextPage: boolean;
   isNextPageLoading: boolean;
-  list: string[];
+  list: Nft[];
   loadNextPage: (params: IndexRange) => Promise<any>;
 }) {
   const rowCount = hasNextPage ? list.length + 1 : list.length;
@@ -41,33 +44,41 @@ function ReactVirtualizedInfiniteLoader({
     !hasNextPage || index < list.length;
 
   const rowRenderer = ({ index, key, style }: ListRowProps) => {
-    let content;
+    let content: React.ReactNode;
 
-    if (!isRowLoaded({ index })) {
-      content = "Loading...";
+    const rowIsNotLoaded = !isRowLoaded({ index });
+
+    if (rowIsNotLoaded) {
+      content = (
+        <MessageWrapper>{isNextPageLoading ? "Loading..." : "Nothing to load"}</MessageWrapper>
+      );
     } else {
-      content = list.find((d, i) => i === index);
+      const nft = list.find((d, i) => i === index)!;
+
+      const id = uuidv4();
+
+      content = (
+        <div key={`${nft.token_id}-${nft.token_address}-${nft.token_hash}`} style={style}>
+          <NftCard key={`${nft.token_id}-${nft.token_address}-${nft.token_hash}`} nft={nft} />
+        </div>
+      );
     }
 
-    return (
-      <div key={key} style={style}>
-        {content}
-      </div>
-    );
+    return content;
   };
 
   return (
     <InfiniteLoader isRowLoaded={isRowLoaded} loadMoreRows={loadMoreRows} rowCount={rowCount}>
       {({ onRowsRendered, registerChild }) => (
         <AutoSizer disableHeight>
-          {({ width, height }) => (
+          {({ width }) => (
             <List
               ref={registerChild}
               onRowsRendered={onRowsRendered}
               rowRenderer={rowRenderer}
               width={width}
               height={500}
-              rowHeight={30}
+              rowHeight={250}
               rowCount={rowCount}
             />
           )}
