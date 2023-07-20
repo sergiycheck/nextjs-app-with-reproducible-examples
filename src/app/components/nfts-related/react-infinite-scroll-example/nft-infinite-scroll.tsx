@@ -6,6 +6,7 @@ import { NO_NFT_IMAGE_PATH, useNftNormalizedMetadata } from "../utils";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { defaultAddress, limit, useNftsInfititeQuery } from "../use-nft-hook";
 import { Nft } from "../types";
+import { MessageWrapper } from "../shared";
 
 export function NftsInfititeScroll() {
   const { data, error, fetchNextPage, hasNextPage, isFetching, isFetchingNextPage, status } =
@@ -62,14 +63,6 @@ export function NftsInfititeScroll() {
     </div>
   );
 }
-
-const MessageWrapper = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <div className="flex justify-center w-100">
-      <div className="p-4 text-center">{children}</div>
-    </div>
-  );
-};
 
 export const NftCard = ({ nft }: { nft: Nft }) => {
   const { data: metadata, isLoading } = useNftNormalizedMetadata(nft);
