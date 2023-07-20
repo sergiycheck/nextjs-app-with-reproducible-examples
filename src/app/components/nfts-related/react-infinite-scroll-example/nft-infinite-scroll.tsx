@@ -18,21 +18,20 @@ export function NftsInfititeScroll() {
   };
 
   return status === "loading" ? (
-    <p>Loading...</p>
+    <MessageWrapper>Loading...</MessageWrapper>
   ) : status === "error" ? (
-    <p>Error: {(error as any)?.message}</p>
+    <MessageWrapper>Error: {(error as any)?.message}</MessageWrapper>
   ) : (
-    <>
+    <div className="mt-4">
       <InfiniteScroll
         dataLength={itemsLength}
         next={fetchMoreData}
         hasMore={true}
         height={400}
-        loader={<div>{isFetching && !isFetchingNextPage ? "Fetching..." : null}</div>}
-        endMessage={
-          <p style={{ textAlign: "center" }}>
-            <b>Yay! You have seen it all</b>
-          </p>
+        loader={
+          <MessageWrapper>
+            <>{isFetching && !isFetchingNextPage ? "Fetching..." : null}</>
+          </MessageWrapper>
         }
       >
         <div className="grid grid-cols-2 gap-4">
@@ -51,7 +50,7 @@ export function NftsInfititeScroll() {
         </div>
       </InfiniteScroll>
 
-      <div className="flex justify-center">
+      {/* <div className="flex justify-center">
         <button onClick={() => fetchMoreData()} disabled={!hasNextPage || isFetchingNextPage}>
           {isFetchingNextPage
             ? "Loading more..."
@@ -59,10 +58,18 @@ export function NftsInfititeScroll() {
             ? "Load More"
             : "Nothing more to load"}
         </button>
-      </div>
-    </>
+      </div> */}
+    </div>
   );
 }
+
+const MessageWrapper = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <div className="flex justify-center w-100">
+      <div className="p-4 text-center">{children}</div>
+    </div>
+  );
+};
 
 export const NftCard = ({ nft }: { nft: Nft }) => {
   const { data: metadata, isLoading } = useNftNormalizedMetadata(nft);
