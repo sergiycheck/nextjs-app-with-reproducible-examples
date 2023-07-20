@@ -1,26 +1,13 @@
 "use client";
 
 import React from "react";
-import { useInfiniteQuery } from "@tanstack/react-query";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { MessageWrapper } from "../shared";
-
-async function fetchServerPage(
-  limit: number,
-  offset: number = 0
-): Promise<{ rows: string[]; nextOffset: number }> {
-  const rows = new Array(limit).fill(0).map((e, i) => `Async loaded row #${i + offset * limit}`);
-
-  await new Promise((r) => setTimeout(r, 500));
-
-  return { rows, nextOffset: offset + 1 };
-}
+import { useInfiniteQueryProjects } from "../hooks/use-projects";
 
 export const TanstackQueryVirtualInfiniteLoading = () => {
   const { status, data, error, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteQuery(["projects"], (ctx) => fetchServerPage(10, ctx.pageParam), {
-      getNextPageParam: (_lastGroup, groups) => groups.length,
-    });
+    useInfiniteQueryProjects();
 
   const allRows = data ? data.pages.flatMap((d) => d.rows) : [];
 

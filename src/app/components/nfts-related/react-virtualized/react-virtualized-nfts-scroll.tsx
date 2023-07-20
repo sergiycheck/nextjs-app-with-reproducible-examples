@@ -1,42 +1,78 @@
 "use client";
 
 import React from "react";
-import { InfiniteLoader, List } from "react-virtualized";
+import { IndexRange, InfiniteLoader, List, AutoSizer, ListRowProps } from "react-virtualized";
+import { useInfiniteQueryProjects } from "../hooks/use-projects";
 
-const remoteRowCount = 1;
+export const ReactVirtualizedInfiniteLoading = () => {
+  const { status, data, error, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } =
+    useInfiniteQueryProjects();
 
-const list: any = [];
+  const allRows = data ? data.pages.flatMap((d) => d.rows) : [];
 
-function isRowLoaded({ index }: { index: number }) {
-  return !!list[index];
-}
-
-function loadMoreRows({ startIndex, stopIndex }: { startIndex: number; stopIndex: number }) {
-  return fetch(`path/to/api?startIndex=${startIndex}&stopIndex=${stopIndex}`).then((response) => {
-    // Store response data in list...
-  });
-}
-
-function rowRenderer({ key, index, style }: { key: string; index: number; style: any }) {
   return (
-    <div key={key} style={style}>
-      {list[index]}
-    </div>
+    <ReactVirtualizedInfiniteLoader
+      hasNextPage={!!hasNextPage}
+      isNextPageLoading={isFetching || isFetchingNextPage}
+      list={allRows}
+      loadNextPage={() => fetchNextPage()}
+    />
+  );
+};
+
+type IsRowLoaded = ({ index }: { index: number }) => boolean;
+
+function ReactVirtualizedInfiniteLoader({
+  hasNextPage,
+  isNextPageLoading,
+  list,
+  loadNextPage,
+}: {
+  hasNextPage: boolean;
+  isNextPageLoading: boolean;
+  list: string[];
+  loadNextPage: (params: IndexRange) => Promise<any>;
+}) {
+  const rowCount = hasNextPage ? list.length + 1 : list.length;
+
+  const loadMoreRows = isNextPageLoading ? (params: IndexRange): any => {} : loadNextPage;
+
+  const isRowLoaded: IsRowLoaded = ({ index }: { index: number }) =>
+    !hasNextPage || index < list.length;
+
+  const rowRenderer = ({ index, key, style }: ListRowProps) => {
+    let content;
+
+    if (!isRowLoaded({ index })) {
+      content = "Loading...";
+    } else {
+      content = list.find((d, i) => i === index);
+    }
+
+    return (
+      <div key={key} style={style}>
+        {content}
+      </div>
+    );
+  };
+
+  return (
+    <InfiniteLoader isRowLoaded={isRowLoaded} loadMoreRows={loadMoreRows} rowCount={rowCount}>
+      {({ onRowsRendered, registerChild }) => (
+        <AutoSizer disableHeight>
+          {({ width, height }) => (
+            <List
+              ref={registerChild}
+              onRowsRendered={onRowsRendered}
+              rowRenderer={rowRenderer}
+              width={width}
+              height={500}
+              rowHeight={30}
+              rowCount={rowCount}
+            />
+          )}
+        </AutoSizer>
+      )}
+    </InfiniteLoader>
   );
 }
-
-export const ReactVirtualizedNftsScroll = () => (
-  <InfiniteLoader isRowLoaded={isRowLoaded} loadMoreRows={loadMoreRows} rowCount={remoteRowCount}>
-    {({ onRowsRendered, registerChild }) => (
-      <List
-        height={200}
-        onRowsRendered={onRowsRendered}
-        ref={registerChild}
-        rowCount={remoteRowCount}
-        rowHeight={20}
-        rowRenderer={rowRenderer}
-        width={300}
-      />
-    )}
-  </InfiniteLoader>
-);
