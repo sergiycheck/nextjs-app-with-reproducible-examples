@@ -5,7 +5,6 @@ import { IndexRange, InfiniteLoader, List, AutoSizer, ListRowProps } from "react
 import { defaultAddress, useNftsInfititeQuery } from "../use-nft-hook";
 import { Nft } from "../types";
 import { MessageWrapper, NftCard } from "../shared";
-import { v4 as uuidv4 } from "uuid";
 
 export const ReactVirtualizedInfiniteLoading = () => {
   const { status, data, error, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } =
@@ -55,10 +54,12 @@ function ReactVirtualizedInfiniteLoader({
     } else {
       const nft = list.find((d, i) => i === index)!;
 
-      const id = uuidv4();
-
       content = (
-        <div key={`${nft.token_id}-${nft.token_address}-${nft.token_hash}`} style={style}>
+        <div
+          key={`${nft.token_id}-${nft.token_address}-${nft.token_hash}`}
+          style={style}
+          className="flex items-center justify-center"
+        >
           <NftCard key={`${nft.token_id}-${nft.token_address}-${nft.token_hash}`} nft={nft} />
         </div>
       );

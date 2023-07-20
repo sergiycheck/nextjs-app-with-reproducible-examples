@@ -25,14 +25,14 @@ export function NftsInfititeScroll() {
         dataLength={itemsLength}
         next={fetchMoreData}
         hasMore={true}
-        height={400}
+        height={500}
         loader={
           <MessageWrapper>
             <>{isFetching && !isFetchingNextPage ? "Fetching..." : null}</>
           </MessageWrapper>
         }
       >
-        <div className="grid grid-cols-2 gap-4">
+        <div className="flex flex-col gap-4 items-center">
           {data?.pages?.map((dataForPage, i) => (
             <React.Fragment key={i}>
               {dataForPage?.result?.map((nft) => {

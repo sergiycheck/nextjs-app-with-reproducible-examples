@@ -2,21 +2,22 @@
 
 import React from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { MessageWrapper } from "../shared";
+import { MessageWrapper, NftCard } from "../shared";
 import { useInfiniteQueryProjects } from "../hooks/use-projects";
+import { defaultAddress, useNftsInfititeQuery } from "../use-nft-hook";
 
 export const TanstackQueryVirtualInfiniteLoading = () => {
   const { status, data, error, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useInfiniteQueryProjects();
+    useNftsInfititeQuery({ address: defaultAddress });
 
-  const allRows = data ? data.pages.flatMap((d) => d.rows) : [];
+  const allRows = data ? data.pages.flatMap((d) => d.result) : [];
 
   const parentRef = React.useRef(null);
 
   const rowVirtualizer = useVirtualizer({
     count: hasNextPage ? allRows.length + 1 : allRows.length,
     getScrollElement: () => parentRef.current,
-    estimateSize: () => 100,
+    estimateSize: () => 230,
     overscan: 5,
   });
 
@@ -48,7 +49,7 @@ export const TanstackQueryVirtualInfiniteLoading = () => {
         ) : (
           <div
             ref={parentRef}
-            className="max-w-full border-2 border-gray-500"
+            className="max-w-full"
             style={{
               height: `500px`,
               width: `100%`,
@@ -64,7 +65,7 @@ export const TanstackQueryVirtualInfiniteLoading = () => {
             >
               {rowVirtualizer.getVirtualItems().map((virtualRow) => {
                 const isLoaderRow = virtualRow.index > allRows.length - 1;
-                const post = allRows[virtualRow.index];
+                const nft = allRows[virtualRow.index];
 
                 return (
                   <div
@@ -84,7 +85,7 @@ export const TanstackQueryVirtualInfiniteLoading = () => {
                         {hasNextPage ? "Loading more..." : "Nothing more to load"}
                       </MessageWrapper>
                     ) : (
-                      <MessageWrapper>{post}</MessageWrapper>
+                      <NftCard nft={nft} />
                     )}
                   </div>
                 );
