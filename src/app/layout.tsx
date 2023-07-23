@@ -19,7 +19,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <nav>
             <ul className="flex flex-row justify-around">
               <Link href="/">Home</Link>
-              <Link href="/page1">page1</Link>
+              <Link href="/infinite-scroll-examples">infinite-scroll-examples</Link>
               <Link href="/page2">page2</Link>
             </ul>
           </nav>

@@ -5,9 +5,11 @@ export default function Page1Layout({ children }: { children: React.ReactNode })
     <section className="grid sm:grid-cols-3 gap-4">
       <nav>
         <ul className="flex flex-col">
-          <Link href="/page1">react-infinite-scroll-component</Link>
-          <Link href="/page1/react-virtualized">react-virtualized</Link>
-          <Link href="/page1/tanstack-query-virtual">tanstack-query-virtual</Link>
+          <Link href="/infinite-scroll-examples">react-infinite-scroll-component</Link>
+          <Link href="/infinite-scroll-examples/react-virtualized">react-virtualized</Link>
+          <Link href="/infinite-scroll-examples/tanstack-query-virtual">
+            tanstack-query-virtual
+          </Link>
         </ul>
       </nav>
 
