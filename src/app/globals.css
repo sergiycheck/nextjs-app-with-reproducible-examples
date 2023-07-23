@@ -28,9 +28,9 @@ main {
   }
 }
 
-@layer base, special;
+@layer base, utilities;
 
-@layer special {
+@layer utilities {
   .item {
     color: rebeccapurple;
   }
