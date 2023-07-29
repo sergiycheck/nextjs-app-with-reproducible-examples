@@ -10,6 +10,7 @@ export default function Page1Layout({ children }: { children: React.ReactNode })
           <Link href="/infinite-scroll-examples/tanstack-query-virtual">
             tanstack-query-virtual
           </Link>
+          <Link href="/infinite-scroll-examples/pagination">pagination</Link>
         </ul>
       </nav>
 
