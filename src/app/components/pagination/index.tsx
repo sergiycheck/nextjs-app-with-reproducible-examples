@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { QueryFunctionContext, useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { NextRequest } from "next/server";
 import React from "react";
 
@@ -67,6 +67,9 @@ export const ChooseAccount = () => {
       <button className="btn" onClick={() => setAddress("0x321")}>
         account 0x321
       </button>
+      <button className="btn" onClick={() => setAddress(undefined)}>
+        clear
+      </button>
     </div>
   );
 };
@@ -81,51 +84,92 @@ const getProjects = async ({ address, cursor }: GetProjctsParams) => {
 };
 
 const useProjectsQuery = (params: GetProjctsParams) =>
-  useQuery({
-    queryKey: ["projects", params.address, params.cursor],
-    queryFn: () => getProjects({ ...params }),
+  useInfiniteQuery({
+    queryKey: ["projects", params.address],
+    queryFn: (context: QueryFunctionContext) => {
+      return getProjects({ ...params, cursor: context.pageParam });
+    },
+    getPreviousPageParam: (firstPage) => {
+      return firstPage?.previousId;
+    },
+    getNextPageParam: (lastPage) => {
+      return lastPage?.nextId;
+    },
     staleTime: 1000 * 60 * 60,
     cacheTime: 1000 * 60 * 60,
   });
 
+export const RequiredToChooseAccountWrapper = () => {
+  const { address } = React.useContext(AccountContext);
+
+  if (!address) {
+    return <div>Please choose an account</div>;
+  }
+
+  return <ProjectPaginationByAccount />;
+};
+
 export const ProjectPaginationByAccount = () => {
   const { address } = React.useContext(AccountContext);
 
-  const [cursor, setCursor] = React.useState<string | undefined>(undefined);
-
-  const { data, isLoading: loading } = useProjectsQuery({
+  const {
+    data,
+    isLoading: loading,
+    fetchNextPage,
+    hasNextPage,
+    fetchPreviousPage,
+    hasPreviousPage,
+  } = useProjectsQuery({
     address,
-    cursor,
   });
+
+  React.useEffect(() => {
+    function fetchNextPageWhileHasNextPage() {
+      if (hasNextPage) {
+        fetchNextPage();
+      }
+    }
+
+    fetchNextPageWhileHasNextPage();
+  }, [hasNextPage, fetchNextPage]);
 
   return (
     <>
       <h1 className="text-xl">Project List</h1>
+
+      <button
+        className="btn"
+        onClick={() => {
+          fetchPreviousPage();
+        }}
+        disabled={!hasPreviousPage}
+      >
+        previous
+      </button>
+
       {loading && <div>Loading...</div>}
+
       <ul className="flex flex-col gap-2">
-        {data?.data.map((item) => (
-          <li className="p-2" key={item.id}>
-            {item.name}
-          </li>
+        {data?.pages.map((page, i) => (
+          <React.Fragment key={i}>
+            {page?.data.map((item) => (
+              <li className="p-2" key={item.id}>
+                {item.name}
+              </li>
+            ))}
+          </React.Fragment>
         ))}
       </ul>
+      {loading && <div>Loading...</div>}
+
       <button
         className="btn"
         onClick={() => {
-          setCursor(data?.previousId);
+          fetchNextPage();
         }}
-        disabled={data?.previousId == null}
+        disabled={!hasNextPage}
       >
-        Previous
-      </button>
-      <button
-        className="btn"
-        onClick={() => {
-          setCursor(data?.nextId);
-        }}
-        disabled={data?.nextId == null}
-      >
-        Next
+        next
       </button>
     </>
   );
@@ -135,7 +179,7 @@ export const PaganationExamplewithServerAndTanstackQuery = () => {
   return (
     <AccountProvider>
       <ChooseAccount />
-      <ProjectPaginationByAccount />
+      <RequiredToChooseAccountWrapper />
     </AccountProvider>
   );
 };
