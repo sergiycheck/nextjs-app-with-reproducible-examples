@@ -1,3 +1,5 @@
+import SentryTestComponent from "../components/sentry-test";
+
 export default function Page2() {
   return (
     <>
@@ -8,6 +10,9 @@ export default function Page2() {
         <code>utilities</code> layer comes after the <code>base</code> layer. My green border,
         font-size, and padding come from the <code>base</code> layer.
       </div>
+
+      <h2 className="text-5xl">sentry test</h2>
+      <SentryTestComponent />
     </>
   );
 }
