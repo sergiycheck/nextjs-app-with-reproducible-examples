@@ -65,6 +65,9 @@ dependencies:
   react-number-format:
     specifier: ^5.2.2
     version: 5.2.2(react-dom@18.2.0)(react@18.2.0)
+  react-otp-input:
+    specifier: ^3.0.4
+    version: 3.0.4(react-dom@18.2.0)(react@18.2.0)
   react-virtualized:
     specifier: ^9.22.5
     version: 9.22.5(react-dom@18.2.0)(react@18.2.0)
@@ -2789,6 +2792,16 @@ packages:
       react-dom: ^0.14 || ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
     dependencies:
       prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
+
+  /react-otp-input@3.0.4(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-24GWRCguMmCatD3u9+mtxOcvoHZBJEtzzKQ/2cIOpr1yRn/umjxXw5d6mwRV8JnGhQqtIigD+k3Vt1ieuDBypg==}
+    peerDependencies:
+      react: '>=16.8.6 || ^17.0.0 || ^18.0.0'
+      react-dom: '>=16.8.6 || ^17.0.0 || ^18.0.0'
+    dependencies:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
     dev: false

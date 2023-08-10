@@ -1,3 +1,4 @@
+import { OptInputExample } from "../components/opt-input";
 import SentryTestComponent from "../components/sentry-test";
 
 export default function Page2() {
@@ -13,6 +14,7 @@ export default function Page2() {
 
       <h2 className="text-5xl">sentry test</h2>
       <SentryTestComponent />
+      <OptInputExample />
     </>
   );
 }
