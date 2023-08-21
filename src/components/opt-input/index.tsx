@@ -24,7 +24,7 @@ export const OptInputExample = () => {
         renderSeparator={<span className="m-2"></span>}
         renderInput={(props) => {
           const { style, ...rest } = props;
-          return <Input {...rest} />;
+          return <Input {...rest} className="input input-bordered input-info w-full max-w-xs" />;
         }}
       />
     </>

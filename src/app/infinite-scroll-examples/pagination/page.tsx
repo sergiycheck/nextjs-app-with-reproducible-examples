@@ -1,4 +1,4 @@
-import { PaganationExamplewithServerAndTanstackQuery } from "@/app/components/pagination";
+import { PaganationExamplewithServerAndTanstackQuery } from "@/components/pagination";
 
 export default function Page() {
   return (

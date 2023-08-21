@@ -1,4 +1,4 @@
-import { TanstackQueryVirtualInfiniteLoading } from "@/app/components/nfts-related/tanstack-query-virtual";
+import { TanstackQueryVirtualInfiniteLoading } from "@/components/nfts-related/tanstack-query-virtual";
 
 export default function Page() {
   return (

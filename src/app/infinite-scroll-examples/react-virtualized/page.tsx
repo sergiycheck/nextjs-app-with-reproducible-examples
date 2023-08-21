@@ -1,4 +1,4 @@
-import { ReactVirtualizedInfiniteLoading } from "@/app/components/nfts-related/react-virtualized/react-virtualized-nfts-scroll";
+import { ReactVirtualizedInfiniteLoading } from "@/components/nfts-related/react-virtualized/react-virtualized-nfts-scroll";
 
 export default function Page() {
   return (
