@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import OtpInput from "react-otp-input";
+import { Input } from "../shared/input";
 
 export const OptInputExample = () => {
   const [otp, setOtp] = React.useState("");
@@ -23,7 +24,7 @@ export const OptInputExample = () => {
         renderSeparator={<span className="m-2"></span>}
         renderInput={(props) => {
           const { style, ...rest } = props;
-          return <input {...rest} className="input input-bordered input-info w-full max-w-xs" />;
+          return <Input {...rest} />;
         }}
       />
     </>

@@ -1,5 +1,6 @@
 import { OptInputExample } from "../components/opt-input";
 import SentryTestComponent from "../components/sentry-test";
+import { CustomDebouncedInput } from "../components/you-dont-need/custom-debounced-input";
 
 export default function Page2() {
   return (
@@ -15,6 +16,7 @@ export default function Page2() {
       <h2 className="text-5xl">sentry test</h2>
       <SentryTestComponent />
       <OptInputExample />
+      <CustomDebouncedInput />
     </>
   );
 }
