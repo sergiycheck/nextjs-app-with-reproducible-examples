@@ -6,7 +6,7 @@ export default function Page1Layout({ children }: { children: React.ReactNode })
       <nav>
         <ul className="flex flex-col">
           <Link href="/different-examples/ethers-docs">ethers-docs</Link>
-          <Link href="/different-examples/debounce-input">ethers-docs</Link>
+          <Link href="/different-examples/debounce-input">debounce input</Link>
         </ul>
       </nav>
 

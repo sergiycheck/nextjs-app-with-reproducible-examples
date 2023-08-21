@@ -26,12 +26,14 @@ import debounce from "lodash.debounce";
 
 export const CustomDebouncedInput = () => {
   const [inputValue, setInputValue] = React.useState("");
+  const [debouncedInputValue, setDebouncedInputValue] = React.useState("");
 
-  const debouncedInputChangeHandler = React.useCallback(
-    debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-      console.log("debouncedInputChangeHandler", e.target.value);
-      setInputValue(e.target.value);
-    }, 500),
+  const debouncedInputChangeHandler = React.useMemo(
+    () =>
+      debounce((e: React.ChangeEvent<HTMLInputElement>) => {
+        setInputValue(e.target.value);
+        setDebouncedInputValue(e.target.value);
+      }, 500),
     []
   );
 
@@ -41,9 +43,9 @@ export const CustomDebouncedInput = () => {
   };
 
   return (
-    <div className="flex flex-col">
-      <h2 className="text-6xl font-bold">custom debounced input</h2>
+    <div className="mt-2">
       <Input value={inputValue} onChange={inputChangeHandler} />
+      <h3 className="text-lg mt-2">Debounce output: {debouncedInputValue}</h3>
     </div>
   );
 };
