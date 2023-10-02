@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ["utf-8-validate"],
   images: {
     remotePatterns: [
       {
