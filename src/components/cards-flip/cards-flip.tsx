@@ -5,6 +5,12 @@ import React from "react";
 import { observable } from "@legendapp/state";
 import { observer } from "@legendapp/state/react";
 
+const hearthStoneCardsUrls = [
+  "/assets/cards/hearth-stone-1.png",
+  "/assets/cards/hearth-stone-2.png",
+  "/assets/cards/hearth-stone-3.png",
+];
+
 const cardVariants: Variants = {
   offscreen: {
     y: 150,
@@ -59,16 +65,16 @@ export const CardsFlip = observer(function CardsFlip() {
 
   return (
     <div className="flex flex-col gap-4 mt-6">
-      <h1 className="text-6xl font-bold text-center">Flipping cards</h1>
+      <h1 className="text-6xl font-bold text-center">Hearthstone</h1>
       <motion.div
         initial="offscreen"
         whileInView="onscreen"
         viewport={{ once: true }}
         className="flex flex-wrap gap-4 mt-2 justify-center"
       >
-        <Card />
-        <Card />
-        <Card />
+        {hearthStoneCardsUrls.map((url) => (
+          <Card key={url} url={url} />
+        ))}
       </motion.div>
 
       <div className="flex justify-center mt-[200px] ">
@@ -87,7 +93,7 @@ export const CardsFlip = observer(function CardsFlip() {
   );
 });
 
-const Card = observer(function Card() {
+const Card = observer(function Card({ url }: { url: string }) {
   const revealed = cardsState$.revealed.get();
 
   return (
@@ -111,7 +117,7 @@ const Card = observer(function Card() {
           className="absolute w-full h-full"
           style={{ backfaceVisibility: "hidden" }}
         >
-          <Image fill className="rounded-t-lg" src={`/assets/cards/ace1.png`} alt="ace" />
+          <Image fill className="rounded-t-lg" src={`${url}`} alt="ace" />
         </motion.div>
       </motion.div>
     </motion.div>
