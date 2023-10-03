@@ -2,6 +2,8 @@
 import Image from "next/image";
 import { motion, Variants } from "framer-motion";
 import React from "react";
+import { observable } from "@legendapp/state";
+import { observer } from "@legendapp/state/react";
 
 const cardVariants: Variants = {
   offscreen: {
@@ -47,10 +49,13 @@ const cardFlipVariantsBack: Variants = {
   },
 };
 
-export function CardsFlip() {
-  let [revealed, setRevealed] = React.useState(false);
+const cardsState$ = observable({
+  revealed: false,
+});
 
-  let clickHandler = () => setRevealed((prevRevealed) => !prevRevealed);
+export const CardsFlip = observer(function CardsFlip() {
+  const cardsRevealed = cardsState$.revealed.get();
+  let clickHandler = () => cardsState$.revealed.set(!cardsRevealed);
 
   return (
     <div className="flex flex-col gap-4 mt-6">
@@ -61,16 +66,17 @@ export function CardsFlip() {
         viewport={{ once: true }}
         className="flex flex-wrap gap-4 mt-2 justify-center"
       >
-        <Card revealed={revealed} />
-        <Card revealed={revealed} />
-        <Card revealed={revealed} />
+        <Card />
+        <Card />
+        <Card />
       </motion.div>
 
       <div className="flex justify-center mt-[200px] ">
         <motion.button
           onClick={clickHandler}
-          className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 
-            font-medium rounded-lg text-sm px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+          className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300
+            w-[300px] h-[70px]
+            font-medium rounded-lg text-lg px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
         >
@@ -79,9 +85,11 @@ export function CardsFlip() {
       </div>
     </div>
   );
-}
+});
 
-function Card({ revealed }: { revealed: boolean }) {
+const Card = observer(function Card() {
+  const revealed = cardsState$.revealed.get();
+
   return (
     <motion.div variants={cardVariants}>
       <motion.div
@@ -108,4 +116,4 @@ function Card({ revealed }: { revealed: boolean }) {
       </motion.div>
     </motion.div>
   );
-}
+});
