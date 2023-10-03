@@ -8,6 +8,7 @@ export default function Page1Layout({ children }: { children: React.ReactNode })
           <Link href="/different-examples/ethers-docs">ethers-docs</Link>
           <Link href="/different-examples/debounce-input">debounce input</Link>
           <Link href="/different-examples/legend-state">legend-state</Link>
+          <Link href="/different-examples/cards-flip">cards-flip</Link>
         </ul>
       </nav>
 
