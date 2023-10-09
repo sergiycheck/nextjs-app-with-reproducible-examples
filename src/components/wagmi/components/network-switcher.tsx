@@ -4,7 +4,7 @@ import { Button } from "@/components/shared/button";
 import React from "react";
 import { useNetwork, useSwitchNetwork } from "wagmi";
 
-export function NetworkSwitcher() {
+export default function NetworkSwitcher() {
   const { chain } = useNetwork();
   const { chains, error, isLoading, pendingChainId, switchNetwork } = useSwitchNetwork();
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);

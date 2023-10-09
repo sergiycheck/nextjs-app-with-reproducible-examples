@@ -1,7 +1,10 @@
 "use client";
 
-import { NetworkSwitcher } from "../components/network-switcher";
-import { Profile } from "../connect/connect";
+import dynamic from "next/dynamic";
+
+const NetworkSwitcher = dynamic(() => import("../components/network-switcher"), { ssr: false });
+
+const Profile = dynamic(() => import("../connect/connect"), { ssr: false });
 
 export const ConnectButton = () => {
   return (

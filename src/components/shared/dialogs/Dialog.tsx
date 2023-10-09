@@ -1,3 +1,5 @@
+"use client";
+
 import { FC, ReactNode, useEffect, useId } from "react";
 
 import { DialogBody } from "./DialogBody";
