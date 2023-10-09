@@ -3,12 +3,16 @@
 import React from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { MessageWrapper, NftCard } from "../shared";
-import { useInfiniteQueryProjects } from "../hooks/use-projects";
 import { defaultAddress, useNftsInfititeQuery } from "../use-nft-hook";
+import { useAccount } from "wagmi";
+import { ConnectButton } from "@/components/wagmi/connect-btn/connect-btn";
 
 export const TanstackQueryVirtualInfiniteLoading = () => {
-  const { status, data, error, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } =
-    useNftsInfititeQuery({ address: defaultAddress });
+  const { address } = useAccount();
+
+  const { status, data, error, isFetching, isFetchingNextPage, fetchNextPage, hasNextPage } = useNftsInfititeQuery({
+    address: address ?? defaultAddress,
+  });
 
   const allRows = data ? data.pages.flatMap((d) => d.result) : [];
 
@@ -31,16 +35,11 @@ export const TanstackQueryVirtualInfiniteLoading = () => {
     if (lastItem.index >= allRows.length - 1 && hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
     }
-  }, [
-    hasNextPage,
-    fetchNextPage,
-    allRows.length,
-    isFetchingNextPage,
-    rowVirtualizer.getVirtualItems(),
-  ]);
+  }, [hasNextPage, fetchNextPage, allRows.length, isFetchingNextPage, rowVirtualizer.getVirtualItems()]);
 
   return (
     <div className="flex flex-col justify-center">
+      <ConnectButton />
       <div className="flex">
         {status === "loading" ? (
           <MessageWrapper>Loading...</MessageWrapper>
@@ -81,9 +80,7 @@ export const TanstackQueryVirtualInfiniteLoading = () => {
                     }}
                   >
                     {isLoaderRow ? (
-                      <MessageWrapper>
-                        {hasNextPage ? "Loading more..." : "Nothing more to load"}
-                      </MessageWrapper>
+                      <MessageWrapper>{hasNextPage ? "Loading more..." : "Nothing more to load"}</MessageWrapper>
                     ) : (
                       <NftCard nft={nft} />
                     )}
@@ -95,9 +92,7 @@ export const TanstackQueryVirtualInfiniteLoading = () => {
         )}
       </div>
 
-      <MessageWrapper>
-        {isFetching && !isFetchingNextPage ? "Background Updating..." : null}
-      </MessageWrapper>
+      <MessageWrapper>{isFetching && !isFetchingNextPage ? "Background Updating..." : null}</MessageWrapper>
     </div>
   );
 };

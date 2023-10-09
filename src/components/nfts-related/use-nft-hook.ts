@@ -15,8 +15,10 @@ export type GetNftsByWalletParams = {
   media_items?: boolean;
 };
 
+// https://deep-index.moralis.io/api-docs/#/account/getNFTs
+
 const queryKeys = {
-  nfts: () => ["nfts"] as const,
+  nfts: (address?: string) => ["nfts", address] as const,
 };
 
 export const getNftsByWallet =
@@ -29,7 +31,6 @@ export const getNftsByWallet =
     const res = await axiosInstance.get<GetNtfsByWalletResponse>(`api/v2/${address}/nft`, {
       params: {
         normalizeMetadata: true,
-        disable_total: false,
         limit,
         ...queryParams,
         cursor,
@@ -39,12 +40,13 @@ export const getNftsByWallet =
     return res.data;
   };
 
-export const useNftsInfititeQuery = ({ address }: { address: string }) => {
+export const useNftsInfititeQuery = (params: GetNftsByWalletParams) => {
   return useInfiniteQuery({
-    queryKey: ["nfts"],
+    queryKey: ["nfts", params.address],
     keepPreviousData: true,
-    queryFn: getNftsByWallet({ address }),
+    queryFn: getNftsByWallet({ ...params }),
     getNextPageParam: (lastPage, pages) => lastPage.cursor,
+    enabled: params.address !== undefined,
   });
 };
 export const defaultAddress = "0xAa5D1125DcD349455dC5f04911BcB315Af10C847";
