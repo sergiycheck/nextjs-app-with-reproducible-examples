@@ -69,7 +69,7 @@ export const CardsFlip = observer(function CardsFlip() {
       <motion.div
         initial="offscreen"
         whileInView="onscreen"
-        viewport={{ once: true }}
+        viewport={{ once: false }}
         className="flex flex-wrap gap-4 mt-2 justify-center"
       >
         {hearthStoneCardsUrls.map((url) => (
@@ -80,9 +80,11 @@ export const CardsFlip = observer(function CardsFlip() {
       <div className="flex justify-center mt-[200px] ">
         <motion.button
           onClick={clickHandler}
-          className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300
+          className="text-white bg-gray-800 hover:bg-gray-900 
+            focus:outline-none focus:ring-4 focus:ring-gray-300
             w-[300px] h-[70px]
-            font-medium rounded-lg text-lg px-5 py-2.5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+            font-medium rounded-lg text-lg px-5 py-2.5 mr-2 mb-2 
+            dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
         >
