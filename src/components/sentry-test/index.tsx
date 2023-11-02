@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import * as Sentry from "@sentry/nextjs";
 
 const SentryTestComponent = () => {
   const [arrOfItems, setArrOfItems] = React.useState<number[]>([]);
@@ -17,10 +16,7 @@ const SentryTestComponent = () => {
       </button>
       <div className="flex flex-row gap-2">
         {arrOfItems.map((item) => (
-          <div
-            key={item}
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-          >
+          <div key={item} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
             {item}
           </div>
         ))}
@@ -36,5 +32,3 @@ const SentryTestComponent = () => {
     </>
   );
 };
-
-export default Sentry.withProfiler(SentryTestComponent);
