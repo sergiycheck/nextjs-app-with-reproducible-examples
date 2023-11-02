@@ -1,11 +1,4 @@
-"use client";
-
-import { NumericFormat } from "react-number-format";
-import { formatUnits, formatEther, parseEther } from "ethers";
-import { useContractWrite } from "wagmi";
-import { Button } from "@/components/shared/button";
-
-const contractAbi = [
+export const NftContractAbi = [
   {
     inputs: [
       {
@@ -1529,45 +1522,3 @@ const contractAbi = [
     type: "function",
   },
 ];
-
-export function ParseUnitsAndGwei() {
-  const valueInWei = "1000000000000000000"; // 1 Ether in wei
-  const valueInEther = formatEther(valueInWei);
-
-  const decimals = 9; // Gwei has 9 decimals
-  const valueInGwei = formatUnits(valueInWei, decimals);
-
-  const parseEtherExample = parseEther("1.4");
-
-  const { data, isLoading, isSuccess, write, error } = useContractWrite({
-    address: "0x1192EA6AffF8B3472cc5084600f85B6000128091",
-    abi: contractAbi,
-    functionName: "presaleMint",
-    //xbtc 0x9E604f5bFd6C01768a1a1C54c7f867b7F4a5A0c0
-    // weth 0x7b79995e5f793A07Bc00c21412e50Ecae098E7f9
-    // usdt 0x7169d38820dfd117c3fa1f22a697dba58d90ba06
-    args: [[1], [1], "0x9E604f5bFd6C01768a1a1C54c7f867b7F4a5A0c0"],
-    chainId: 11155111,
-  });
-
-  console.log(data);
-
-  return (
-    <>
-      <p className="text-primary">valueInEther</p>
-      <NumericFormat value={valueInEther} displayType={"text"} thousandSeparator={true} />
-
-      <p className="text-primary">valueInGwei</p>
-      <NumericFormat value={valueInGwei} displayType={"text"} thousandSeparator={true} />
-
-      <p className="text-primary">parse ether return</p>
-      <NumericFormat value={parseEtherExample.toString()} displayType={"text"} thousandSeparator={true} />
-
-      <p className="text-primary">Presale mint with xbtc token</p>
-
-      <Button onClick={() => write()} disabled={isLoading}>
-        write presale mint
-      </Button>
-    </>
-  );
-}
