@@ -1,4 +1,4 @@
-import { PresaleMintComponent } from "@/components/web3-related/presale-ming/presale-mint-component";
+import { PresaleMintComponent } from "@/components/web3-related/presale-mint/presale-mint-component";
 import { ParseUnitsAndGwei } from "../../../components/web3-related/parse-units-and-gwei";
 
 export default function Page() {

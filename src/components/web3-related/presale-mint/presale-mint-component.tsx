@@ -8,11 +8,15 @@ import { Input } from "../../shared/input";
 import { NftContractAbi } from "./contract-abi";
 import { NumericFormat } from "react-number-format";
 import { v4 as uuidv4 } from "uuid";
+import toast from "react-hot-toast";
+import { useTransactor } from "../hooks/useTransactor";
+import { getParsedError } from "../utils/utilsContract";
+import { notification } from "../utils/notification";
 
 const tokens = [
   {
     name: "XBTC",
-    address: "0x9E604f5bFd6C01768a1a1C54c7f867b7F4a5A0c0",
+    address: "0xDe41C435BE0aef16d0f0bCEB7289ec2dA7f5C519",
   },
   {
     name: "WETH",
@@ -24,7 +28,7 @@ const tokens = [
   },
 ];
 
-const nftContractAddress = "0x1192EA6AffF8B3472cc5084600f85B6000128091";
+const nftContractAddress = "0xE559Ef638396632192B3b31E4395E73b94D19dd3";
 
 export function PresaleMintComponent() {
   const chainId = 11155111;
@@ -43,6 +47,7 @@ export function PresaleMintComponent() {
   const {
     data,
     isLoading,
+    writeAsync: writePresaleMintAsync,
     write: writePresaleMint,
   } = useContractWrite({
     address: nftContractAddress,
@@ -54,11 +59,25 @@ export function PresaleMintComponent() {
 
   React.useEffect(() => {
     if (data) {
-      console.log(data);
+      notification.info(`${data.hash}`);
     }
   }, [data]);
 
   const disabledPresaleMintButton = !tokenAddress || isLoading;
+
+  const writeTxn = useTransactor();
+
+  const handleWrite = async () => {
+    if (writePresaleMintAsync) {
+      try {
+        const makeWriteWithParams = () => writePresaleMintAsync();
+        await writeTxn(makeWriteWithParams);
+      } catch (e: any) {
+        const message = getParsedError(e);
+        notification.error(message);
+      }
+    }
+  };
 
   return (
     <div className="border p-2 rounded-md w-full">
@@ -67,7 +86,6 @@ export function PresaleMintComponent() {
       <div className="flex flex-col gap-2">
         <div className="flex gap-2">
           <Dropdown
-            className="w-full"
             menu={
               <>
                 {tokens
@@ -110,14 +128,25 @@ export function PresaleMintComponent() {
             />
           </Dropdown>
 
-          <Button
-            onClick={() => {
-              writePresaleMint();
-            }}
-            disabled={disabledPresaleMintButton}
-          >
-            write presale mint
-          </Button>
+          <div className="flex gap-2">
+            <Button
+              onClick={() => {
+                writePresaleMint();
+              }}
+              disabled={disabledPresaleMintButton}
+            >
+              presaleMint
+            </Button>
+
+            <Button
+              onClick={() => {
+                handleWrite();
+              }}
+              disabled={disabledPresaleMintButton}
+            >
+              presaleMint with transactor
+            </Button>
+          </div>
         </div>
 
         <div className="flex flex-row gap-2">

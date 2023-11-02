@@ -1,5 +1,7 @@
 "use client";
 
+import { Toaster } from "react-hot-toast";
+
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
@@ -20,6 +22,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <WagmiProvider>
       <QueryClientProvider client={queryClient}>
         {children}
+        <Toaster />
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </WagmiProvider>

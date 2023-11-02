@@ -1,0 +1,122 @@
+import { getParsedError } from "../utils/utilsContract";
+
+import { getBlockExplorerTxLink } from "../utils/networks";
+import { WriteContractResult } from "@wagmi/core";
+import { Hash, SendTransactionParameters, TransactionReceipt, WalletClient } from "viem";
+import { useWalletClient, usePublicClient } from "wagmi";
+import { notification } from "../utils/notification";
+
+type TransactionFunc = (
+  tx: (() => Promise<WriteContractResult>) | SendTransactionParameters,
+  options?: {
+    onBlockConfirmation?: (txnReceipt: TransactionReceipt) => void;
+    blockConfirmations?: number;
+  }
+) => Promise<Hash | undefined>;
+
+/**
+ * Custom notification content for TXs.
+ */
+const TxnNotification = ({
+  message,
+  blockExplorerLink,
+}: {
+  message: string;
+  blockExplorerLink?: string;
+}) => {
+  return (
+    <div className={`ml-1 flex cursor-default flex-col`}>
+      <p className="my-0">{message}</p>
+      {blockExplorerLink && blockExplorerLink.length > 0 ? (
+        <a
+          href={blockExplorerLink}
+          target="_blank"
+          rel="noreferrer"
+          className="text-md block underline"
+        >
+          check out transaction
+        </a>
+      ) : null}
+    </div>
+  );
+};
+
+/**
+ * @description Runs Transaction passed in to returned funtion showing UI feedback.
+ * @param _walletClient
+ * @returns function that takes a transaction and returns a promise of the transaction hash
+ */
+export const useTransactor = (_walletClient?: WalletClient): TransactionFunc => {
+  let walletClient = _walletClient;
+  const { data } = useWalletClient();
+  const publicClient = usePublicClient();
+
+  if (walletClient === undefined && data) {
+    walletClient = data;
+  }
+
+  const result: TransactionFunc = async (tx, options) => {
+    if (!walletClient) {
+      notification.error("Cannot access account");
+      console.error("⚡️ ~ file: useTransactor.tsx ~ error");
+      return;
+    }
+
+    let notificationId = null;
+    let transactionHash: Awaited<WriteContractResult>["hash"] | undefined = undefined;
+    try {
+      const network = await walletClient.getChainId();
+
+      notificationId = notification.loading(
+        <TxnNotification message="Awaiting for user confirmation" />
+      );
+      if (typeof tx === "function") {
+        // Tx is already prepared by the caller
+        transactionHash = (await tx()).hash;
+      } else if (tx != null) {
+        transactionHash = await walletClient.sendTransaction(tx);
+      } else {
+        throw new Error("Incorrect transaction passed to transactor");
+      }
+      notification.remove(notificationId);
+
+      const blockExplorerTxURL = network ? getBlockExplorerTxLink(network, transactionHash) : "";
+
+      notificationId = notification.loading(
+        <TxnNotification
+          message="Waiting for transaction to complete."
+          blockExplorerLink={blockExplorerTxURL}
+        />
+      );
+
+      const transactionReceipt = await publicClient.waitForTransactionReceipt({
+        hash: transactionHash,
+        confirmations: options?.blockConfirmations,
+      });
+      notification.remove(notificationId);
+
+      notification.success(
+        <TxnNotification
+          message="Transaction completed successfully!"
+          blockExplorerLink={blockExplorerTxURL}
+        />,
+        {
+          icon: "🎉",
+        }
+      );
+
+      if (options?.onBlockConfirmation) options.onBlockConfirmation(transactionReceipt);
+    } catch (error: any) {
+      if (notificationId) {
+        notification.remove(notificationId);
+      }
+      console.error("⚡️ ~ file: useTransactor.ts ~ error", error);
+      const message = getParsedError(error);
+      notification.error(message);
+    }
+
+    return transactionHash;
+  };
+
+  return result;
+};
