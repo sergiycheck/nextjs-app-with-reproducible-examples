@@ -1,9 +1,8 @@
 "use client";
 import React from "react";
-import { useContractWrite } from "wagmi";
+import { useContractWrite, useWalletClient } from "wagmi";
 import { Button } from "../../shared/button";
 import { Dropdown } from "../../shared/dropdown/Dropdown";
-import { Divider } from "../../shared/divider/Divider";
 import { Input } from "../../shared/input";
 import { NftContractAbi } from "./contract-abi";
 import { NumericFormat } from "react-number-format";
@@ -64,7 +63,6 @@ export function PresaleMintComponent() {
     args: [[...ids], [...counts], tokenAddress],
     chainId: chainId,
   });
-
   React.useEffect(() => {
     if (data) {
       notification.info(`${data.hash}`);
