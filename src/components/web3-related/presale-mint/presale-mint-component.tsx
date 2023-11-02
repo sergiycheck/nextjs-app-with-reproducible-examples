@@ -8,10 +8,10 @@ import { Input } from "../../shared/input";
 import { NftContractAbi } from "./contract-abi";
 import { NumericFormat } from "react-number-format";
 import { v4 as uuidv4 } from "uuid";
-import toast from "react-hot-toast";
 import { useTransactor } from "../hooks/useTransactor";
 import { getParsedError } from "../utils/utilsContract";
 import { notification } from "../utils/notification";
+import { parseEther } from "ethers";
 
 const tokens = [
   {
@@ -38,6 +38,14 @@ export function PresaleMintComponent() {
 
   const [currentTokenId, setCurrentTokenId] = React.useState<undefined | number>();
   const [currentTokenIdCount, setCurrentTokenIdCount] = React.useState<undefined | number>();
+
+  const [currentPayAbleAmount, setCurrentPayAbleAmount] = React.useState<undefined | string>();
+  const payAbleAmount = React.useMemo(() => {
+    if (currentPayAbleAmount) {
+      return parseEther(currentPayAbleAmount);
+    }
+    return parseEther("0");
+  }, [currentPayAbleAmount]);
 
   const [tokenIdsAndCountLookup, setTokenIdsAndCountLookup] = React.useState({});
 
@@ -79,11 +87,62 @@ export function PresaleMintComponent() {
     }
   };
 
+  const {
+    data: dataPresaleMintETH,
+    isLoading: isLoadingPresaleMintETH,
+    writeAsync: writePresaleMintETHAsync,
+  } = useContractWrite({
+    address: nftContractAddress,
+    abi: NftContractAbi,
+    functionName: "presaleMintETH",
+    args: [[...ids], [...counts]],
+    chainId: chainId,
+  });
+
+  const writePresaleMintETH = async () => {
+    if (writePresaleMintETHAsync) {
+      try {
+        const makeWriteWithParams = () => writePresaleMintETHAsync();
+        await writeTxn(makeWriteWithParams);
+      } catch (e: any) {
+        const message = getParsedError(e);
+        notification.error(message);
+      }
+    }
+  };
+
+  const writePresaleMintETHButtonDisabled = !currentPayAbleAmount || isLoadingPresaleMintETH;
+
   return (
     <div className="border p-2 rounded-md w-full">
       <p className="text-3xl mb-5">Presale mint with different tokens</p>
 
       <div className="flex flex-col gap-2">
+        {/* presaleMintETH */}
+
+        <div className="flex gap-2">
+          <NumericFormat
+            placeholder="payable amount in ETH"
+            customInput={Input}
+            value={currentPayAbleAmount}
+            onValueChange={(values, sourceInfo) => {
+              setCurrentPayAbleAmount(values.value);
+            }}
+          />
+
+          <div className="flex gap-2">
+            <Button
+              disabled={writePresaleMintETHButtonDisabled}
+              onClick={() => {
+                writePresaleMintETH();
+              }}
+            >
+              writePresaleMintETH
+            </Button>
+          </div>
+        </div>
+
+        {/* presaleMint */}
         <div className="flex gap-2">
           <Dropdown
             menu={
@@ -189,8 +248,6 @@ export function PresaleMintComponent() {
           </Button>
         </div>
       </div>
-
-      <Divider />
 
       <div className="flex flex-col gap-3 ">
         {Object.keys(tokenIdsAndCountLookup).map((tokenId) => {
