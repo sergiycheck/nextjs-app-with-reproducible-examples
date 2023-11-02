@@ -1,5 +1,6 @@
 import { PresaleMintComponent } from "@/components/web3-related/presale-mint/presale-mint-component";
 import { ParseUnitsAndGwei } from "../../../components/web3-related/parse-units-and-gwei";
+import { ConnectButton } from "@/components/wagmi/connect-btn/connect-btn";
 
 export default function Page() {
   return (

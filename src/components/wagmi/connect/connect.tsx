@@ -13,7 +13,8 @@ export default function Profile() {
 
   if (isConnected) {
     return (
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-row gap-4 items-center">
+        <p>address {address?.toString().slice(0, 6) + "..." + address?.toString().slice(-4)}</p>
         <Button onClick={() => disconnect()}>
           <span className="text-sm">Disconnect</span>
         </Button>
@@ -33,7 +34,11 @@ export default function Profile() {
       <Dialog isVisible={showDialog} onClose={() => setShowDialog(false)}>
         <Dialog.Body className={"flex w-full flex-col items-center align-middle justify-center"}>
           {connectors.map((connector) => (
-            <Button disabled={!connector.ready} key={connector.id} onClick={() => connect({ connector })}>
+            <Button
+              disabled={!connector.ready}
+              key={connector.id}
+              onClick={() => connect({ connector })}
+            >
               {connector.name}
               {!connector.ready && " (unsupported)"}
               {isLoading && connector.id === pendingConnector?.id && " (connecting)"}
